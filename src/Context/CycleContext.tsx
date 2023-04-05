@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import { Cycle, CycleContentProps, CycleContextProviderProps } from './types'
 
 export const CycleContext = createContext({} as CycleContentProps)
@@ -9,6 +9,22 @@ export function CycleContextProvider({ children }: CycleContextProviderProps) {
   const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+
+  useEffect(() => {
+    if (cycles.length > 0) {
+      const cyclesJson = JSON.stringify(cycles)
+      localStorage.setItem('@ignite-timer:cycles_history', cyclesJson)
+    }
+  }, [cycles])
+
+  useEffect(() => {
+    const data = localStorage.getItem('@ignite-timer:cycles_history')
+    const dataParse: Cycle[] = JSON.parse(data!)
+
+    if (dataParse) {
+      setCycles(dataParse)
+    }
+  }, [])
 
   function CreateNewCycle(minutesAmount: number, task: string) {
     const id = String(new Date().getTime())
@@ -23,6 +39,7 @@ export function CycleContextProvider({ children }: CycleContextProviderProps) {
     setActiveCycleId(id)
 
     setCycles((state) => [...state, newCycle])
+
     setAmountSecondsPassed(0)
   }
 
