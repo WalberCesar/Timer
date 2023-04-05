@@ -5,7 +5,7 @@ import { Cycle } from '../../Context/types'
 
 export function History() {
   const data = localStorage.getItem('@ignite-timer:cycles_history')
-  const responseCycle = data && JSON.parse(data)
+  const cycles = data && JSON.parse(data)
 
   return (
     <HistoryContainer>
@@ -22,8 +22,8 @@ export function History() {
             </tr>
           </thead>
           <tbody>
-            {responseCycle &&
-              responseCycle.map((cycle: Cycle) => {
+            {cycles &&
+              cycles.map((cycle: Cycle) => {
                 const distanceTaskStartTimeToNow = formatDistanceToNow(
                   new Date(cycle.startDate),
                   {
